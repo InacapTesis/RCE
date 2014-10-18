@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../Menus/Admin/inicioAdmin.xhtml">
+
+            <ui:define name="content">
+                <f:view>
+
+
+                    <div id="content" style="margin-left:0px !important;">
+                       <p:growl id="msgs" showSummary="true" life="3000"  />  
+                        <h:form id="formNivelesEducacionales">
+                            <div class="menubar">
+                                <div class="sidebar-toggler visible-xs">
+                                    <i class="ion-navicon"></i>
+                                </div>
+                                <div class="page-title">
+                                    Niveles Educacionales
+                                </div>
+                            </div>
+                            <div class="content-wrapper">  
+                                <p:dataTable id="tablaNivelesEducacionales"
+                                             value="#{nivelEducacionalBean.nivelesEducacionales}" var="item" 
+                                             rows="10" paginator="true" 
+                                             paginatorPosition="bottom"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,15"
+                                             selectionMode="single"
+                                             selection="#{nivelEducacionalBean.selectedNivelEducacional}"
+                                             rowKey="#{item.educCodigo}"
+                                             widgetVar="tabla"
+                                             filteredValue="#{nivelEducacionalBean.filterNivelesEducacionales}"
+                                             emptyMessage="No se encontraron resultados">
+                                    <p:ajax event="rowSelect" listener="#{nivelEducacionalBean.onRowSelected()}" update=":formNivelesEducacionales:educDescripcion2 , 
+                                            :formNivelesEducacionales:educCod2, :formNivelesEducacionales:tablaNivelesEducacionales:btnEditNivelEdu"/>
+                                    <p:column filterBy="#{item.educCodigo}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Codigo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.educCodigo}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{item.educDescripcion}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Descripcion"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.educDescripcion}"/>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <p:commandButton process="tablaNivelesEducacionales" icon="ui-icon-document" 
+                                                         value="Crear"  title="Crear" onclick="PF('dlg1').show()" />
+                                        <p:commandButton process="tablaNivelesEducacionales" icon="ui-icon-pencil" disabled="#{nivelEducacionalBean.botones}"
+                                                         value="Editar"  title="Modificar" onclick="PF('dlg2').show()" id="btnEditNivelEdu"/>
+                                    </f:facet>
+                                </p:dataTable>
+                            </div>
+                            <p:dialog header="Modificar Nivel Educacional" widgetVar="dlg2" 
+                                  width="600" resizable="false" 
+                            position="center">
+                            <div id="content" style="margin-left: 0px !important;">
+                                <fieldset>
+                                    <legend>Modificar Nivel Educacional</legend>
+                                        <div class="form-group">
+                                            <p:outputLabel value="Descripcion:" for="educDescripcion2" styleClass="col-md-4 control-label" />
+                                            <div class="col-md-4">
+                                                <p:inputText id="educDescripcion2" value="#{nivelEducacionalBean.nivelEducacional.educDescripcion}" 
+                                                             title="EducDescripcion" styleClass="form-control input-md" />
+                                            </div>
+                                            <p:inputText value="#{nivelEducacionalBean.nivelEducacional.educCodigo}" id="educCod2" type="hidden"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label"></label>
+                                            <div class="col-md-4">
+                                                <p:commandButton value="Guardar" actionListener="#{nivelEducacionalBean.updateNivelEducacional()}"
+                                                                 update=":msgs, :formNivelesEducacionales" styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)"/>
+                                                <p:commandButton value="Cancelar" onclick="PF('dlg2').hide()" styleClass="btn btn-danger" />
+                                            </div>
+                                        </div>
+                                </fieldset>
+                            </div>
+                        </p:dialog>
+                        </h:form>
+                        <p:dialog header="Crear Nivel Educacional" widgetVar="dlg1" 
+                                  width="600" resizable="false" 
+                            position="center">
+                            <div id="content" style="margin-left: 0px !important;">
+                                <fieldset>
+                                    <legend>Crear Nivel Educacional</legend>
+                                    <h:form styleClass="form-horizontal" id="formNewNivelEducacional" >
+
+                                        <div class="form-group">
+                                            <p:outputLabel value="Descripcion:" for="educDescripcion" styleClass="col-md-4 control-label" />
+                                            <div class="col-md-4">
+                                                <p:inputText id="educDescripcion" value="#{nivelEducacionalBean.nivelEducacional.educDescripcion}" 
+                                                             title="EducDescripcion" styleClass="form-control input-md" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label"></label>
+                                            <div class="col-md-4">
+                                                <p:commandButton value="Guardar" actionListener="#{nivelEducacionalBean.createNivelEducacional()}"
+                                                                 update=":msgs, :formNivelesEducacionales" styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)"/>
+                                                <p:commandButton value="Cancelar" onclick="PF('dlg1').hide()" styleClass="btn btn-danger" />
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                </fieldset>
+                            </div>
+                        </p:dialog>
+                    </div>
+                </f:view>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../Menus/Admin/inicioAdmin.xhtml">
+
+            <ui:define name="content">
+                <f:view>
+
+
+                    <div id="content" style="margin-left:0px !important;">
+                        <p:growl id="msgs" showSummary="true" life="3000"  />  
+                        <h:form>
+                            <div class="menubar">
+                                <div class="sidebar-toggler visible-xs">
+                                    <i class="ion-navicon"></i>
+                                </div>
+                                <div class="page-title">
+                                    Comunas
+                                </div>
+                            </div>
+                            <div class="content-wrapper">  
+                                <p:dataTable 
+                                    id="tablaDeComunas"
+                                    value="#{comunasBean.comunas}" var="item" 
+                                    rows="10" paginator="true" 
+                                    paginatorPosition="bottom"
+                                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                    rowsPerPageTemplate="5,10,15"
+                                    widgetVar="tabla"
+                                    selectionMode="single"
+                                    selection="#{comunasBean.selectedComuna}"
+                                    rowKey="#{item.comunaCodigo}"
+                                    filteredValue="#{comunasBean.filterComunas}"
+                                    emptyMessage="No se encontraron resultados"
+
+                                    >
+                                    <p:column filterBy="#{item.comunaCodigo}">
+                                        <f:facet name="header">
+                                            <h:outputText value="ComunaCodigo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.comunaCodigo}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{item.comunaNombre}">
+                                        <f:facet name="header">
+                                            <h:outputText value="ComunaNombre"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.comunaNombre}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{item.ciudadCodigo}">
+                                        <f:facet name="header">
+                                            <h:outputText value="CiudadCodigo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.ciudadCodigo}"/>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <p:commandButton process="tablaDeComunas" icon="ui-icon-document" 
+                                                         value="Crear"  title="Crear" onclick="PF('dlg1').show()"/>
+                                         <p:commandButton process="tablaDeComunas" icon="ui-icon-pencil"  id="btnEditarComuna"
+                                                         value="Editar"  title="Editar" onclick="PF('dlg2').show()"/>   
+                                    </f:facet>
+                                </p:dataTable>
+                            </div>
+                        </h:form>
+                        <p:dialog header="Crear Comuna" widgetVar="dlg1" 
+                                  width="600" resizable="false" 
+                            position="center">
+                            <div id="content" style="margin-left: 0px !important;">
+                                <fieldset>
+                                    <h:form styleClass="form-horizontal" id="formCreateComuna" >
+                                        <div class="form-group">
+                                            <p:outputLabel value="Comuna Nombre:" for="comunaNombre" styleClass="col-md-4 control-label" />
+                                            <div class="col-md-4">
+                                                <p:inputText id="comunaNombre" value="#{comunasBean.comuna.comunaNombre}" title="ComunaNombre" styleClass="form-control input-md" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                                <h:selectOneMenu id="ciudadCodigo"  styleClass="form-control" 
+                                                                 value="#{comunasBean.comuna.ciudadCodigo}"
+                                                                 required="true"
+                                                                 converter="ciudadesConverter">
+                                                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true" />
+                                                    <f:selectItems value="#{comunasBean.ciudades}" 
+                                                                   var="ciudades" itemLabel="#{ciudades.ciudadNombre}"
+                                                                   itemValue="#{ciudades}" />
+                                                </h:selectOneMenu>
+                                            </div>
+
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label"></label>
+                                            <div class="col-md-4">
+                                                <p:commandButton value="Guardar" actionListener="#{fixme}" update=":msgs" styleClass="btn btn-success" />
+                                                <p:commandButton value="Cancelar" onclick="volver();" styleClass="btn btn-danger" />
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                </fieldset>
+                            </div>
+
+
+                        </p:dialog>
+                        
+                    </div>
+                </f:view>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>RCE ADMINISTRACION</title>
+        <script type="text/javascript">
+            function ocultar(xhr, status, args) {
+                if (args.creado) {
+                    document.getElementById(args.formulario).reset();
+                    PF(args.dialog).hide();
+                }
+            }
+            function ocultar2(xhr, status, args) {
+                if (args.creado) {
+                    document.getElementById(args.formulario).reset();
+                    PF('dlg2').hide();
+                    
+                }
+            }
+        </script>
+    </h:head>
+
+    <h:body>
+        <p:layout fullPage="true">
+
+            <p:layoutUnit id="top" position="north" size="100" resizable="true" closable="true" collapsible="true">
+                <img src="#{applicationBean.baseUrl}/resources/images/configuracion.jpg" width="90" height="85"/>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="south" size="100" header="Bottom" resizable="true" closable="true" collapsible="true">
+                <ui:insert name="bottom">Bottom</ui:insert>
+            </p:layoutUnit> 
+
+            <p:layoutUnit position="west" size="200" header="Left" resizable="true" closable="true" collapsible="true">
+                <h:outputText value="West unit content." />
+            </p:layoutUnit>
+
+            <p:layoutUnit position="east" size="200" header="Right" resizable="true" closable="true" collapsible="true" effect="drop">
+                <h:outputText value="Right unit content." />
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" id="content">
+                <h:form id="FormMenuAdmin">
+                    <p:growl id="msgs"/>
+                    <p:menubar>
+                        <p:submenu label="Administracion" icon="ui-icon-suitcase">
+                            <p:submenu label="Mantenedores">
+                                <p:menuitem value="Estados Civiles" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/EstadosCiviles.xhtml"/>
+                                <p:menuitem value="Niveles Educacionales" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/NivelesEducacionales.xhtml"/>
+                                <p:menuitem value="Regiones" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Regiones.xhtml"/>
+                                <p:menuitem value="Ciudades" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Ciudades.xhtml"/>
+                            </p:submenu>
+                        </p:submenu>
+                    </p:menubar>
+                </h:form>
+                <br/>
+                <ui:insert name="content">Content</ui:insert>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+
+</html>

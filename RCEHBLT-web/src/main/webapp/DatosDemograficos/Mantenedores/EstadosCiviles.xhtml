@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../../Menus/Admin/inicioAdmin.xhtml">
+
+            <ui:define name="content">
+                <f:view>
+                    <div id="content" style="margin-left:0px !important;">
+                        <p:growl id="msgs"/>
+                        <h:form id="formTablaEstadosCiviles">
+                            <div class="menubar">
+                                <div class="sidebar-toggler visible-xs">
+                                    <i class="ion-navicon"></i>
+                                </div>
+                                <div class="page-title">
+                                    Estados Civiles
+                                </div>
+                            </div>
+                            <div class="content-wrapper">  
+                                <p:dataTable id="tablaEstadosCiviles"
+                                             value="#{estadoCivilBean.estadosCiviles}" var="item" 
+                                             rows="10" paginator="true" 
+                                             paginatorPosition="bottom"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,15"
+                                             widgetVar="tabla"
+                                             filteredValue="#{estadoCivilBean.filterEstadosCiviles}"
+                                             emptyMessage="No se encontraron resultados"
+                                             selectionMode="single"
+                                             rowKey="#{item.estadoCivilCodigo}"
+                                             selection="#{estadoCivilBean.selectedEstadoCivil}"
+                                             >
+                                    <p:column filterBy="#{item.estadoCivilCodigo}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Estado Civil Codigo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.estadoCivilCodigo}"/>
+                                    </p:column>
+                                    <p:ajax event="rowSelect" listener="#{estadoCivilBean.onRowSelect()}" update=":formTablaEstadosCiviles:estadoCivilDescripcion2,
+                                            :formTablaEstadosCiviles:estadoCivilCodigo2,:formTablaEstadosCiviles:tablaEstadosCiviles:btnEditarEstadosCiviles"/>
+                                    <p:column filterBy="#{item.estadoCivilDescripcion}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Estado Civil Descripcion"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.estadoCivilDescripcion}"/>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <p:commandButton process="tablaEstadosCiviles" icon="ui-icon-document" 
+                                                         value="Crear"  title="Crear" onclick="PF('dlg1').show()">
+                                        </p:commandButton>
+                                        <p:commandButton process="tablaEstadosCiviles" icon="ui-icon-pencil" disabled="#{estadoCivilBean.btnModificar}"
+                                                         value="Editar"  title="Modificar" onclick="PF('dlg2').show()" id="btnEditarEstadosCiviles">
+                                        </p:commandButton>
+                                    </f:facet>
+                                </p:dataTable>
+                            </div>
+                            <p:dialog header="Editar Estado Civil" widgetVar="dlg2" 
+                                      width="600" resizable="false" 
+                                      position="center">
+                                <div id="content" style="margin-left: 0px !important;">
+                                    <fieldset>
+                                        <legend>Crear Estado Civil</legend>
+                                            <div class="form-group">
+                                                <p:outputLabel value="Estado Civil Descripcion:" for="estadoCivilDescripcion2" styleClass="col-md-4 control-label" />
+                                                <div class="col-md-4">
+                                                    <p:inputText id="estadoCivilDescripcion2" value="#{estadoCivilBean.estadoCivil.estadoCivilDescripcion}" 
+                                                                 title="Estado Civil Descripcion" styleClass="form-control input-md" />
+                                                </div>
+                                            </div>
+                                        <p:inputText id="estadoCivilCodigo2" type="hidden" value="#{estadoCivilBean.estadoCivil.estadoCivilCodigo}"/>
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label"></label>
+                                                <div class="col-md-4">
+                                                    <p:commandButton value="Guardar" actionListener="#{estadoCivilBean.updateEstadoCivil(event)}" 
+                                                                     update=":msgs, :formTablaEstadosCiviles" styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)" />
+                                                    <p:commandButton value="Cancelar" onclick="PF('dlg1').hide()" styleClass="btn btn-danger" />
+                                                </div>
+                                            </div>
+                                    </fieldset>
+                                </div>
+                            </p:dialog>
+                        </h:form>
+                        <p:dialog header="Crear Estado Civil" widgetVar="dlg1" 
+                                  width="600" resizable="false" 
+                                  position="center">
+                            <div id="content" style="margin-left: 0px !important;">
+                                <fieldset>
+                                    <legend>Crear Estado Civil</legend>
+                                    <h:form styleClass="form-horizontal" id="FormCreateEstadoCivil" >
+                                        <div class="form-group">
+                                            <p:outputLabel value="Estado Civil Descripcion:" for="estadoCivilDescripcion" styleClass="col-md-4 control-label" />
+                                            <div class="col-md-4">
+                                                <p:inputText id="estadoCivilDescripcion" value="#{estadoCivilBean.estadoCivil.estadoCivilDescripcion}" 
+                                                             title="Estado Civil Descripcion" styleClass="form-control input-md" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label"></label>
+                                            <div class="col-md-4">
+                                                <p:commandButton value="Guardar" actionListener="#{estadoCivilBean.createEstadoCivil(event)}" 
+                                                                 update=":msgs, :formTablaEstadosCiviles" styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)" />
+                                                <p:commandButton value="Cancelar" onclick="PF('dlg1').hide()" styleClass="btn btn-danger" />
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                </fieldset>
+                            </div>
+                        </p:dialog>
+                    </div>
+                </f:view>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

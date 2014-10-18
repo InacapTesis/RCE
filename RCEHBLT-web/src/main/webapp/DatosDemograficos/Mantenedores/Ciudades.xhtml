@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../../Menus/Admin/inicioAdmin.xhtml">
+
+            <ui:define name="content">
+                <f:view>
+                    <div id="content" style="margin-left:0px !important;">
+                        <p:growl id="msgs" showSummary="true" life="3000"  />  
+                        <h:form id="formCiudades">
+                            <div class="menubar">
+                                <div class="sidebar-toggler visible-xs">
+                                    <i class="ion-navicon"></i>
+                                </div>
+                                <div class="page-title">
+                                    Ciduades
+                                </div>
+                            </div>
+                            <div class="content-wrapper">  
+                                <p:dataTable 
+                                    id="tablaCiudades"
+                                    value="#{ciudadesBean.ciudades}" var="item" 
+                                    rows="10" paginator="true" 
+                                    paginatorPosition="bottom"
+                                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                    rowsPerPageTemplate="5,10,15"
+                                    widgetVar="tabla"
+                                    selectionMode="single"
+                                    selection="#{ciudadesBean.selectedCiudad}"
+                                    rowKey="#{item.ciudadCodigo}"
+                                    filteredValue="#{ciudadesBean.filterCiudades}"
+                                    emptyMessage="No se encontraron resultados">
+                                    <p:ajax event="rowSelect" listener="#{ciudadesBean.onRowSelect()}" 
+                                            update=":formCiudades:ciudadNombre2 
+                                            :formCiudades:listaRegiones,
+                                            :formCiudades:ciudadCodigo, 
+                                            :formCiudades:tablaCiudades:btnEditarCiudad"/>
+                                    <p:column filterBy="#{item.ciudadNombre}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre Ciudad"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.ciudadNombre}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{item.regionCodigo.regionDescripcion}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Region"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.regionCodigo.regionDescripcion}"/>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                         <p:commandButton process="tablaCiudades" icon="ui-icon-document" 
+                                                         value="Crear"  title="Crear" onclick="PF('dlg1').show()"/>
+                                         <p:commandButton process="tablaCiudades" icon="ui-icon-pencil"  id="btnEditarCiudad"
+                                                         value="Editar"  title="Editar" onclick="PF('dlg2').show()">   
+                                        </p:commandButton>
+                                    </f:facet>
+                                </p:dataTable>
+                            </div>
+                            <p:dialog header="Modificar Ciudad" widgetVar="dlg2" 
+                                  width="600" resizable="false" 
+                                  position="center">
+                            <div id="content" style="margin-left: 0px !important;">
+                                <fieldset>
+                                        <div class="form-group">
+                                            <p:outputLabel value="Ciudad Nombre:" for="ciudadNombre2" styleClass="col-md-4 control-label" />
+                                            <div class="col-md-4">
+                                                <p:inputText id="ciudadNombre2" value="#{ciudadesBean.ciudad.ciudadNombre}" title="CiudadNombre" styleClass="form-control input-md" />
+                                            </div>
+                                        </div>
+                                    <p:inputText type="hidden" id="ciudadCodigo" value="#{ciudadesBean.ciudad.ciudadCodigo}"/>
+                                        <div class="form-group">
+                                            <p:outputLabel value="Region:" styleClass="col-md-4 control-label" for="regionCodigo2" />
+                                            <div class="col-md-4">
+                                                <h:selectOneMenu id="regionCodigo2"  styleClass="form-control" 
+                                                                 value="#{ciudadesBean.idRegion}"
+                                                                 required="true"
+                                                                 requiredMessage="Error de Seleccion en las Region">
+                                                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true" />
+                                                    <f:selectItems value="#{ciudadesBean.regiones}" id="listaRegiones"
+                                                                   var="regiones" itemLabel="#{regiones.regionDescripcion}"
+                                                                   itemValue="#{regiones.regionCodigo}" 
+                                                                   />
+                                                   
+                                                </h:selectOneMenu>
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label"></label>
+                                            <div class="col-md-4">
+                                                <p:commandButton value="Guardar" actionListener="#{ciudadesBean.updateCiudad(event)}" update=":msgs , :formCiudades" 
+                                                                 styleClass="btn btn-success" 
+                                                                 oncomplete="ocultar(xhr, status, args)" />
+                                                <p:commandButton value="Cancelar" onclick="PF('dlg1').hide()"  styleClass="btn btn-danger" />
+                                            </div>
+                                        </div>
+                                </fieldset>
+                            </div>
+                        </p:dialog>
+                        </h:form>
+                        <p:dialog header="Crear Ciudad" widgetVar="dlg1" 
+                                  width="600" resizable="false" 
+                                  position="center">
+                            <div id="content" style="margin-left: 0px !important;">
+                                <fieldset>
+                                    <legend>Crear Ciudad</legend>
+                                    <h:form styleClass="form-horizontal" id="formCreateCiudad" >
+                                        <div class="form-group">
+                                            <p:outputLabel value="Ciudad Nombre:" for="ciudadNombre" styleClass="col-md-4 control-label" />
+                                            <div class="col-md-4">
+                                                <p:inputText id="ciudadNombre" value="#{ciudadesBean.ciudad.ciudadNombre}" title="CiudadNombre" styleClass="form-control input-md" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <p:outputLabel value="Region:" styleClass="col-md-4 control-label" for="regionCodigo" />
+                                            <div class="col-md-4">
+                                                <h:selectOneMenu id="regionCodigo"  styleClass="form-control" 
+                                                                 value="#{ciudadesBean.ciudad.regionCodigo}"
+                                                                 required="true"
+                                                                 converter="regionesConverter">
+                                                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true" />
+                                                    <f:selectItems value="#{ciudadesBean.regiones}" 
+                                                                   var="regiones" itemLabel="#{regiones.regionDescripcion}"
+                                                                   itemValue="#{regiones}" />
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label"></label>
+                                            <div class="col-md-4">
+                                                <p:commandButton value="Guardar" actionListener="#{ciudadesBean.createCiudad(event)}" update=":msgs , :formCiudades" 
+                                                                 styleClass="btn btn-success" 
+                                                                 oncomplete="ocultar(xhr, status, args)" />
+                                                <p:commandButton value="Cancelar" onclick="PF('dlg1').hide()"  styleClass="btn btn-danger" />
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                </fieldset>
+                            </div>
+                        </p:dialog>
+                    </div>
+                </f:view>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../Menus/Admin/inicioAdmin.xhtml">
+
+            <ui:define name="content">
+                <f:view>
+                    <div id="content" style="margin-left:0px !important;">
+                        <p:growl id="msgs" showSummary="true" life="3000"  />  
+                        <h:form id="FormTablaRegiones">
+                            <div class="menubar">
+                                <div class="sidebar-toggler visible-xs">
+                                    <i class="ion-navicon"></i>
+                                </div>
+                                <div class="page-title">
+                                    Regiones
+                                </div>
+                            </div>
+                            <div class="content-wrapper">  
+                                <p:dataTable 
+                                    id="TablaRegiones"
+                                    value="#{regionesBean.regiones}" var="item" 
+                                    rows="10" paginator="true" 
+                                    paginatorPosition="bottom"
+                                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                    rowsPerPageTemplate="5,10,15"
+                                    widgetVar="tabla"
+                                    selectionMode="single"
+                                    selection="#{regionesBean.selectedRegion}"
+                                    rowKey="#{item.regionCodigo}"
+                                    filteredValue="#{regionesBean.filterRegiones}"
+                                    emptyMessage="No se encontraron resultados">
+                                    <p:ajax event="rowSelect" listener="#{regionesBean.onRowSelect()}" update=":FormTablaRegiones:regionCodigo2, 
+                                            :FormTablaRegiones:regionDescripcion2, :FormTablaRegiones:TablaRegiones:btnEditRegion"/>
+                                    <p:column filterBy="#{item.regionCodigo}">
+                                        <f:facet name="header">
+                                            <h:outputText value="RegionCodigo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.regionCodigo}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{item.regionDescripcion}">
+                                        <f:facet name="header">
+                                            <h:outputText value="RegionDescripcion"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.regionDescripcion}"/>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <p:commandButton process="TablaRegiones" icon="ui-icon-document" 
+                                                         value="Crear"  title="Crear" onclick="PF('dlg1').show()">
+                                        </p:commandButton>
+                                        <p:commandButton process="TablaRegiones" icon="ui-icon-pencil" disabled="#{regionesBean.botones}" id="btnEditRegion"
+                                                         value="Editar"  title="Modificar" onclick="PF('dlg2').show()" >
+                                        </p:commandButton>
+                                    </f:facet>
+                                </p:dataTable>
+                            </div>
+                            <p:dialog header="Modificar Regiones" widgetVar="dlg2"
+                                      width="600" resizable="false" 
+                                      position="center">
+                                <f:view>
+                                    <div id="content" style="margin-left: 0px !important;">
+                                        <fieldset>
+                                            <legend>Editar Region</legend>
+                                            <p:inputText type="hidden" id="regionCodigo2" value="#{regionesBean.region.regionCodigo}" title="RegionCodigo" styleClass="form-control input-md" required="true" requiredMessage="The RegionCodigo field is required."/>
+                                            <div class="form-group">
+                                                <p:outputLabel value="RegionDescripcion:" for="regionDescripcion2" styleClass="col-md-4 control-label" />
+                                                <div class="col-md-4">
+                                                    <p:inputText id="regionDescripcion2" value="#{regionesBean.region.regionDescripcion}" title="RegionDescripcion" styleClass="form-control input-md" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label"></label>
+                                                <div class="col-md-4">
+                                                    <p:commandButton value="Guardar" actionListener="#{regionesBean.updateRegion()}" update=":msgs, :FormTablaRegiones" 
+                                                                     styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)"/>
+                                                    <p:commandButton value="Cancelar" onclick="PF('dgl1').hide()" styleClass="btn btn-danger" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </f:view>
+                            </p:dialog>
+                        </h:form>
+                    </div>
+                </f:view>
+                <p:dialog header="Crear Regiones" widgetVar="dlg1" 
+                          width="600" resizable="false" 
+                          position="center">
+                    <f:view>
+                        <div id="content" style="margin-left: 0px !important;">
+                            <fieldset>
+                                <legend>Crear Region</legend>
+                                <h:form styleClass="form-horizontal" id="formCreateRegiones" >
+                                    <div class="form-group">
+                                        <p:outputLabel value="RegionDescripcion:" for="regionDescripcion" styleClass="col-md-4 control-label" />
+                                        <div class="col-md-4">
+                                            <p:inputText id="regionDescripcion" value="#{regionesBean.region.regionDescripcion}" title="RegionDescripcion" styleClass="form-control input-md" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label"></label>
+                                        <div class="col-md-4">
+                                            <p:commandButton value="Guardar" actionListener="#{regionesBean.createRegion()}" update=":msgs, :FormTablaRegiones" 
+                                                             styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)"/>
+                                            <p:commandButton value="Cancelar" onclick="PF('dgl1').hide()" styleClass="btn btn-danger" />
+                                        </div>
+                                    </div>
+                                </h:form>
+                            </fieldset>
+                        </div>
+                    </f:view>
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
