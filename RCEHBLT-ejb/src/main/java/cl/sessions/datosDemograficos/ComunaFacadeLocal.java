@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cl.sessions.datosDemograficos;
 
 import cl.entities.datosDemograficos.Comuna;
@@ -26,11 +25,11 @@ public interface ComunaFacadeLocal {
     Comuna find(Object id);
 
     List<Comuna> findAll();
-    
+
     List<Comuna> findAll2(String dato);
 
     List<Comuna> findRange(int[] range);
 
     int count();
-    
+
 }

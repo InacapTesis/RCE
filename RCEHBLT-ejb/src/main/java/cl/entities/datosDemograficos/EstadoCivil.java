@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "EstadoCivil.findByEstadoCivilDescripcion", query = "SELECT e FROM EstadoCivil e WHERE e.estadoCivilDescripcion = :estadoCivilDescripcion")})
 public class EstadoCivil implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
+@Id
     @TableGenerator(name = "Table_gen", table = "SEQUENCE_TABLE", pkColumnName = "SEQ_NAME",
             valueColumnName = "SEQ_COUNT" , pkColumnValue = "ESTCIV_SEQ", initialValue = 1 ,allocationSize = 0)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "Table_gen")

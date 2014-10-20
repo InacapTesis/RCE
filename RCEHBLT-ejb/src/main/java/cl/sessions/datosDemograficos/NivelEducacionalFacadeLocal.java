@@ -26,9 +26,9 @@ public interface NivelEducacionalFacadeLocal {
     NivelEducacional find(Object id);
 
     List<NivelEducacional> findAll();
-    
-    List<NivelEducacional> findAll2(String dato);
 
+    List<NivelEducacional> findAll2(String dato);
+    
     List<NivelEducacional> findRange(int[] range);
 
     int count();

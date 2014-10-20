@@ -30,49 +30,49 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author AndresEduardo
  */
 @Entity
-@Table(name = "nacionalidad")
+@Table(name = "grupo_sanguineo")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Nacionalidad.findAll", query = "SELECT n FROM Nacionalidad n"),
-    @NamedQuery(name = "Nacionalidad.findByNacionalidadCodigo", query = "SELECT n FROM Nacionalidad n WHERE n.nacionalidadCodigo = :nacionalidadCodigo"),
-    @NamedQuery(name = "Nacionalidad.findByNacionalidadDescripcion", query = "SELECT n FROM Nacionalidad n WHERE n.nacionalidadDescripcion = :nacionalidadDescripcion")})
-public class Nacionalidad implements Serializable {
+    @NamedQuery(name = "GrupoSanguineo.findAll", query = "SELECT g FROM GrupoSanguineo g"),
+    @NamedQuery(name = "GrupoSanguineo.findByGsanguineoCodigo", query = "SELECT g FROM GrupoSanguineo g WHERE g.gsanguineoCodigo = :gsanguineoCodigo"),
+    @NamedQuery(name = "GrupoSanguineo.findByGsanguineoDescripcion", query = "SELECT g FROM GrupoSanguineo g WHERE g.gsanguineoDescripcion = :gsanguineoDescripcion")})
+public class GrupoSanguineo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @TableGenerator(name = "Table_gen", table = "SEQUENCE_TABLE", pkColumnName = "SEQ_NAME",
-            valueColumnName = "SEQ_COUNT" , pkColumnValue = "NACIONALIDAD_SEQ", initialValue = 1 ,allocationSize = 0)
+            valueColumnName = "SEQ_COUNT" , pkColumnValue = "GRUSAN_SEQ", initialValue = 1 ,allocationSize = 0)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "Table_gen")
     @Basic(optional = false)
     @NotNull
-    @Column(name = "nacionalidad_codigo")
-    private Integer nacionalidadCodigo;
+    @Column(name = "gsanguineo_codigo")
+    private Integer gsanguineoCodigo;
     @Size(max = 20)
-    @Column(name = "nacionalidad_descripcion")
-    private String nacionalidadDescripcion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nacionalidadCodigo")
+    @Column(name = "gsanguineo_descripcion")
+    private String gsanguineoDescripcion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gsanguineoCodigo")
     private List<DatosPaciente> datosPacienteList;
 
-    public Nacionalidad() {
+    public GrupoSanguineo() {
     }
 
-    public Nacionalidad(Integer nacionalidadCodigo) {
-        this.nacionalidadCodigo = nacionalidadCodigo;
+    public GrupoSanguineo(Integer gsanguineoCodigo) {
+        this.gsanguineoCodigo = gsanguineoCodigo;
     }
 
-    public Integer getNacionalidadCodigo() {
-        return nacionalidadCodigo;
+    public Integer getGsanguineoCodigo() {
+        return gsanguineoCodigo;
     }
 
-    public void setNacionalidadCodigo(Integer nacionalidadCodigo) {
-        this.nacionalidadCodigo = nacionalidadCodigo;
+    public void setGsanguineoCodigo(Integer gsanguineoCodigo) {
+        this.gsanguineoCodigo = gsanguineoCodigo;
     }
 
-    public String getNacionalidadDescripcion() {
-        return nacionalidadDescripcion;
+    public String getGsanguineoDescripcion() {
+        return gsanguineoDescripcion;
     }
 
-    public void setNacionalidadDescripcion(String nacionalidadDescripcion) {
-        this.nacionalidadDescripcion = nacionalidadDescripcion;
+    public void setGsanguineoDescripcion(String gsanguineoDescripcion) {
+        this.gsanguineoDescripcion = gsanguineoDescripcion;
     }
 
     @XmlTransient
@@ -87,18 +87,18 @@ public class Nacionalidad implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (nacionalidadCodigo != null ? nacionalidadCodigo.hashCode() : 0);
+        hash += (gsanguineoCodigo != null ? gsanguineoCodigo.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Nacionalidad)) {
+        if (!(object instanceof GrupoSanguineo)) {
             return false;
         }
-        Nacionalidad other = (Nacionalidad) object;
-        if ((this.nacionalidadCodigo == null && other.nacionalidadCodigo != null) || (this.nacionalidadCodigo != null && !this.nacionalidadCodigo.equals(other.nacionalidadCodigo))) {
+        GrupoSanguineo other = (GrupoSanguineo) object;
+        if ((this.gsanguineoCodigo == null && other.gsanguineoCodigo != null) || (this.gsanguineoCodigo != null && !this.gsanguineoCodigo.equals(other.gsanguineoCodigo))) {
             return false;
         }
         return true;
@@ -106,7 +106,7 @@ public class Nacionalidad implements Serializable {
 
     @Override
     public String toString() {
-        return "cl.entities.datosDemograficos.Nacionalidad[ nacionalidadCodigo=" + nacionalidadCodigo + " ]";
+        return "cl.entities.datosDemograficos.GrupoSanguineo[ gsanguineoCodigo=" + gsanguineoCodigo + " ]";
     }
     
 }

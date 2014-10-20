@@ -54,15 +54,14 @@ public abstract class AbstractFacade<T> {
         q.setFirstResult(range[0]);
         return q.getResultList();
     }
-    
-    public List<T> findAll2(String orden){
-    CriteriaQuery<T> q = getEntityManager().getCriteriaBuilder().createQuery(entityClass);
-    Root<T> c = q.from(entityClass);
-    q.select(c);
-    q.orderBy(getEntityManager().getCriteriaBuilder().asc(c.get(orden)));
-    return getEntityManager().createQuery(q).getResultList();
-  }
 
+    public List<T> findAll2(String orden) {
+        CriteriaQuery<T> q = getEntityManager().getCriteriaBuilder().createQuery(entityClass);
+        Root<T> c = q.from(entityClass);
+        q.select(c);
+        q.orderBy(getEntityManager().getCriteriaBuilder().asc(c.get(orden)));
+        return getEntityManager().createQuery(q).getResultList();
+    }
 
     public int count() {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();

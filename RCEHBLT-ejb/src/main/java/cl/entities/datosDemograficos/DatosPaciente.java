@@ -97,6 +97,9 @@ public class DatosPaciente implements Serializable {
     @JoinColumn(name = "nacionalidad_codigo", referencedColumnName = "nacionalidad_codigo")
     @ManyToOne(optional = false)
     private Nacionalidad nacionalidadCodigo;
+    @JoinColumn(name = "gsanguineo_codigo", referencedColumnName = "gsanguineo_codigo")
+    @ManyToOne(optional = false)
+    private GrupoSanguineo gsanguineoCodigo;
     @JoinColumn(name = "estado_civil_codigo", referencedColumnName = "estado_civil_codigo")
     @ManyToOne(optional = false)
     private EstadoCivil estadoCivilCodigo;
@@ -245,6 +248,14 @@ public class DatosPaciente implements Serializable {
 
     public void setNacionalidadCodigo(Nacionalidad nacionalidadCodigo) {
         this.nacionalidadCodigo = nacionalidadCodigo;
+    }
+
+    public GrupoSanguineo getGsanguineoCodigo() {
+        return gsanguineoCodigo;
+    }
+
+    public void setGsanguineoCodigo(GrupoSanguineo gsanguineoCodigo) {
+        this.gsanguineoCodigo = gsanguineoCodigo;
     }
 
     public EstadoCivil getEstadoCivilCodigo() {

@@ -40,7 +40,7 @@ public class Region implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @TableGenerator(name = "Table_gen", table = "SEQUENCE_TABLE", pkColumnName = "SEQ_NAME",
-            valueColumnName = "SEQ_COUNT" , pkColumnValue = "REGION_SEQ", initialValue = 1 ,allocationSize = 0)
+            valueColumnName = "SEQ_COUNT", pkColumnValue = "REGION_SEQ", initialValue = 1, allocationSize = 0)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "Table_gen")
     @Basic(optional = false)
     @NotNull

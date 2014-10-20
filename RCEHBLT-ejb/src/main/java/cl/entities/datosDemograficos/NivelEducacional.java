@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cl.entities.datosDemograficos;
 
 import java.io.Serializable;
@@ -37,10 +36,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "NivelEducacional.findByEducCodigo", query = "SELECT n FROM NivelEducacional n WHERE n.educCodigo = :educCodigo"),
     @NamedQuery(name = "NivelEducacional.findByEducDescripcion", query = "SELECT n FROM NivelEducacional n WHERE n.educDescripcion = :educDescripcion")})
 public class NivelEducacional implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @TableGenerator(name = "Table_gen", table = "SEQUENCE_TABLE", pkColumnName = "SEQ_NAME",
-            valueColumnName = "SEQ_COUNT" , pkColumnValue = "NIVEDU_SEQ", initialValue = 1 ,allocationSize = 0)
+            valueColumnName = "SEQ_COUNT", pkColumnValue = "NIVEDU_SEQ", initialValue = 1, allocationSize = 0)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "Table_gen")
     @Basic(optional = false)
     @NotNull
@@ -108,5 +108,5 @@ public class NivelEducacional implements Serializable {
     public String toString() {
         return "cl.entities.datosDemograficos.NivelEducacional[ educCodigo=" + educCodigo + " ]";
     }
-    
+
 }
