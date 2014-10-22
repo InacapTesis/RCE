@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cl.RCE.datosDemograficosBeans;
 
 import cl.entities.datosDemograficos.Region;
+import cl.sessions.datosDemograficos.BussinessFacade;
+import cl.sessions.datosDemograficos.BussinessFacadeLocal;
 import cl.sessions.datosDemograficos.RegionFacade;
 import cl.sessions.datosDemograficos.RegionFacadeLocal;
 import java.util.List;
@@ -25,82 +26,92 @@ import org.primefaces.context.RequestContext;
 @ManagedBean
 @RequestScoped
 public class RegionesBean {
+
+    @EJB
+    private final BussinessFacadeLocal bussinessFacade;
     @EJB
     private final RegionFacadeLocal regionFacade;
-    
     private Region region;
     private Region selectedRegion;
     private List<Region> regiones;
     private List<Region> filterRegiones;
     private boolean botones;
-    
+
     //Constructo de la Clase
     public RegionesBean() {
-        regionFacade  = new RegionFacade();
+        regionFacade = new RegionFacade();
+        bussinessFacade = new BussinessFacade();
         region = new Region();
         selectedRegion = new Region();
         botones = true;
     }
-    
+
     //PostConstuct 
     @PostConstruct
-    public void myInit(){
+    public void myInit() {
         regiones = regionFacade.findAll2("regionCodigo");
     }
-    
+
     //Metodos
-    
-    public void onRowSelect(){
+    public void onRowSelect() {
         region = selectedRegion;
         botones = false;
     }
-    
-    public void createRegion(){
+
+    public void createRegion() {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
         boolean estado = false;
-        String formulario ="";
+        String formulario = "";
         String dialog = "";
-        if(region.getRegionDescripcion().isEmpty() || region.getRegionDescripcion().equalsIgnoreCase("")){
-             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El Campo de la Descripcion Vacio",null));
-        }else{
-            regionFacade.create(region);
-            regiones = regionFacade.findAll2("regionCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Creado la Region",null));
-            estado = true;
-            formulario = "formNewNivelEducacional";//reseteo de formulario por jvascript del template
-            dialog = "dgl1";
+        if (region.getRegionDescripcion().isEmpty() || region.getRegionDescripcion().equalsIgnoreCase("")) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El Campo de la Descripcion Vacio", null));
+        } else {
+            if (bussinessFacade.findRegionDesc(region.getRegionDescripcion().toUpperCase())) {
+                region.setRegionDescripcion(region.getRegionDescripcion().toUpperCase());
+                regionFacade.create(region);
+                regiones = regionFacade.findAll2("regionCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Creado la Region", null));
+                estado = true;
+                formulario = "formCreateRegiones";//reseteo de formulario por jvascript del template
+                dialog = "dlg1";
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El Campo de la Descripcion ya esta Registrado", null));
+            }
         }
         region = new Region();
         reqContext.addCallbackParam("formulario", formulario);
         reqContext.addCallbackParam("creado", estado);
         reqContext.addCallbackParam("dialog", dialog);
-        
     }
-    
-    public void updateRegion(){
+
+    public void updateRegion() {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
         boolean estado = false;
-        String formulario ="";
+        String formulario = "";
         String dialog = "";
-        if(region.getRegionDescripcion().isEmpty() || region.getRegionDescripcion().equalsIgnoreCase("")){
-             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El Campo de la Descripcion Vacio",null));
-        }else{
-            regionFacade.edit(region);
-            regiones = regionFacade.findAll2("regionCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Editado la Region",null));
-            estado = true;
-            formulario = "formNewNivelEducacional";//reseteo de formulario por jvascript del template
-            dialog = "dgl2";
+        region.setRegionDescripcion(region.getRegionDescripcion().toUpperCase());
+        if (region.getRegionDescripcion().isEmpty() || region.getRegionDescripcion().equalsIgnoreCase("")) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El Campo de la Descripcion Vacio", null));
+        } else {
+            if (bussinessFacade.findRegionDesc(region.getRegionDescripcion().toUpperCase())) {
+                regionFacade.edit(region);
+                regiones = regionFacade.findAll2("regionCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Editado la Region", null));
+                estado = true;
+                formulario = "formCreateRegiones";//reseteo de formulario por jvascript del template
+                dialog = "dlg2";
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El Campo de la Descripcion ya esta Registrado", null));
+            }
         }
         region = new Region();
         reqContext.addCallbackParam("formulario", formulario);
         reqContext.addCallbackParam("creado", estado);
         reqContext.addCallbackParam("dialog", dialog);
-        
     }
-    
+
     //Get and Set
     public Region getRegion() {
         return region;
@@ -141,6 +152,5 @@ public class RegionesBean {
     public void setBotones(boolean botones) {
         this.botones = botones;
     }
-    
-    
+
 }

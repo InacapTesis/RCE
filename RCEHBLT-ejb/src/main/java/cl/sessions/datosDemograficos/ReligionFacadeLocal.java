@@ -26,6 +26,8 @@ public interface ReligionFacadeLocal {
     Religion find(Object id);
 
     List<Religion> findAll();
+    
+    List<Religion> findAll2(String dato);
 
     List<Religion> findRange(int[] range);
 

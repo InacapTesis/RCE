@@ -6,6 +6,8 @@
 package cl.RCE.datosDemograficosBeans;
 
 import cl.entities.datosDemograficos.EstadoCivil;
+import cl.sessions.datosDemograficos.BussinessFacade;
+import cl.sessions.datosDemograficos.BussinessFacadeLocal;
 import cl.sessions.datosDemograficos.EstadoCivilFacade;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -26,6 +28,8 @@ import org.primefaces.context.RequestContext;
 public class EstadoCivilBean {
 
     @EJB
+    private final BussinessFacadeLocal bussinessFacade;
+    @EJB
     private final cl.sessions.datosDemograficos.EstadoCivilFacadeLocal estadoCivilFacade;
     private EstadoCivil estadoCivil;
     private List<EstadoCivil> estadosCiviles;
@@ -34,8 +38,8 @@ public class EstadoCivilBean {
     private boolean btnModificar;
 
     //Contructores
-
     public EstadoCivilBean() {
+        bussinessFacade = new BussinessFacade();
         estadoCivilFacade = new EstadoCivilFacade();
         selectedEstadoCivil = new EstadoCivil();
         estadoCivil = new EstadoCivil();
@@ -47,60 +51,71 @@ public class EstadoCivilBean {
         estadosCiviles = estadoCivilFacade.findAll2("estadoCivilCodigo");
     }
 // Metodos
-    public void createEstadoCivil(ActionEvent event){
+
+    public void createEstadoCivil(ActionEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
         boolean creado = false;
         String formulario = "";
-        String dialog ="";
-        if(estadoCivil.getEstadoCivilDescripcion().isEmpty() || 
-                estadoCivil.getEstadoCivilDescripcion().equalsIgnoreCase("")){
-             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Estado Civil",null));
-        }else{
-            estadoCivilFacade.create(estadoCivil);
-            estadosCiviles = estadoCivilFacade.findAll2("estadoCivilCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Estado Civil Creado",null));
-            formulario = "FormCreateEstadoCivil";
-            dialog = "dlg1";
-            creado = true;            
+        String dialog = "";
+        estadoCivil.setEstadoCivilDescripcion(estadoCivil.getEstadoCivilDescripcion().toUpperCase());
+        if (estadoCivil.getEstadoCivilDescripcion().isEmpty()
+                || estadoCivil.getEstadoCivilDescripcion().equalsIgnoreCase("")) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Estado Civil", null));
+        } else {
+            if (bussinessFacade.findEstadoCivilDesc(estadoCivil.getEstadoCivilDescripcion())) {
+                estadoCivilFacade.create(estadoCivil);
+                estadosCiviles = estadoCivilFacade.findAll2("estadoCivilCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Estado Civil Creado", null));
+                formulario = "FormCreateEstadoCivil";
+                dialog = "dlg1";
+                creado = true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Estado Civil ya Ingresado", null));
+            }
         }
         estadoCivil = new EstadoCivil();
         reqContext.addCallbackParam("formulario", formulario);
         reqContext.addCallbackParam("creado", creado);
         reqContext.addCallbackParam("dialog", dialog);
     }
-    public void updateEstadoCivil(ActionEvent event){
+
+    public void updateEstadoCivil(ActionEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
         boolean editado = false;
-        String formulario ="";
+        String formulario = "";
         String dialog = "";
-        if(estadoCivil.getEstadoCivilDescripcion().isEmpty() || 
-                estadoCivil.getEstadoCivilDescripcion().equalsIgnoreCase("")){
-             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Estado Civil",null));
-        }else{
-            estadoCivilFacade.edit(estadoCivil);
-            estadosCiviles = estadoCivilFacade.findAll2("estadoCivilCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Estado Civil Editado",null));
-            formulario = "FormCreateEstadoCivil";
-            dialog = "dlg2";
-            editado = true;            
+        estadoCivil.setEstadoCivilDescripcion(estadoCivil.getEstadoCivilDescripcion().toUpperCase());
+        if (estadoCivil.getEstadoCivilDescripcion().isEmpty()
+                || estadoCivil.getEstadoCivilDescripcion().equalsIgnoreCase("")) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Estado Civil", null));
+        } else {
+            if (bussinessFacade.findEstadoCivilDesc(estadoCivil.getEstadoCivilDescripcion())) {
+                estadoCivilFacade.edit(estadoCivil);
+                estadosCiviles = estadoCivilFacade.findAll2("estadoCivilCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Estado Civil Editado", null));
+                formulario = "FormCreateEstadoCivil";
+                dialog = "dlg2";
+                editado = true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Estado Civil ya Ingresado", null));
+            }
         }
         estadoCivil = new EstadoCivil();
         reqContext.addCallbackParam("formulario", formulario);
         reqContext.addCallbackParam("creado", editado);
         reqContext.addCallbackParam("dialog", dialog);
     }
-    
-    public void limpiarDatos(ActionEvent event){
+
+    public void limpiarDatos(ActionEvent event) {
         estadoCivil = new EstadoCivil();
     }
-    
-    public void onRowSelect(){
+
+    public void onRowSelect() {
         estadoCivil = selectedEstadoCivil;
         btnModificar = false;
     }
- 
 
 //Getter an Setter
     public EstadoCivil getEstadoCivil() {
@@ -142,7 +157,5 @@ public class EstadoCivilBean {
     public void setBtnModificar(boolean btnModificar) {
         this.btnModificar = btnModificar;
     }
-    
-    
 
 }

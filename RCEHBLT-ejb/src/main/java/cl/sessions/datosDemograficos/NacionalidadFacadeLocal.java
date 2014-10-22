@@ -26,6 +26,8 @@ public interface NacionalidadFacadeLocal {
     Nacionalidad find(Object id);
 
     List<Nacionalidad> findAll();
+    
+    List<Nacionalidad> findAll2(String dato);
 
     List<Nacionalidad> findRange(int[] range);
 

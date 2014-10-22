@@ -26,6 +26,8 @@ public interface TipoPrevisionFacadeLocal {
     TipoPrevision find(Object id);
 
     List<TipoPrevision> findAll();
+    
+    List<TipoPrevision> findAll2(String dato);
 
     List<TipoPrevision> findRange(int[] range);
 

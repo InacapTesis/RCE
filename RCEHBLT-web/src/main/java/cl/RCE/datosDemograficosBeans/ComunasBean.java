@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cl.RCE.datosDemograficosBeans;
 
 import cl.entities.datosDemograficos.Ciudad;
 import cl.entities.datosDemograficos.Comuna;
+import cl.sessions.datosDemograficos.BussinessFacade;
+import cl.sessions.datosDemograficos.BussinessFacadeLocal;
 import cl.sessions.datosDemograficos.CiudadFacade;
 import cl.sessions.datosDemograficos.CiudadFacadeLocal;
 import cl.sessions.datosDemograficos.ComunaFacade;
@@ -15,8 +16,12 @@ import cl.sessions.datosDemograficos.ComunaFacadeLocal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -25,6 +30,9 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class ComunasBean {
+
+    @EJB
+    private final BussinessFacadeLocal bussinessFacade;
     @EJB
     private final CiudadFacadeLocal ciudadFacade;
     @EJB
@@ -36,20 +44,91 @@ public class ComunasBean {
     private Comuna selectedComuna;
     private boolean botones;
     private Integer idCiudad;
-   //Constructor base de la clase 
+
+    //Constructor base de la clase 
     public ComunasBean() {
         ciudadFacade = new CiudadFacade();
         comunaFacade = new ComunaFacade();
+        bussinessFacade = new BussinessFacade();
+        botones = true;
     }
-    
+
     @PostConstruct
-    public void myInitMethod(){
+    public void myInitMethod() {
         comuna = new Comuna();
         selectedComuna = new Comuna();
         comunas = comunaFacade.findAll2("comunaCodigo");
         ciudades = ciudadFacade.findAll2("ciudadCodigo");
     }
-    
+    //metodos
+
+    public void createComuna() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        RequestContext reqContext = RequestContext.getCurrentInstance();
+        boolean creado = false;
+        String formulario = "";
+        String dialog = "";
+        comuna.setComunaNombre(comuna.getComunaNombre().toUpperCase());
+        if (comuna.getComunaNombre().isEmpty()
+                || comuna.getComunaNombre().equalsIgnoreCase("")) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion de la Comuna", null));
+        } else {
+            if (bussinessFacade.findComunaDesc(comuna.getComunaNombre())) {
+                comunaFacade.create(comuna);
+                comunas = comunaFacade.findAll2("comunaCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Comuna Creada", null));
+                formulario = "formCreateComuna";
+                dialog = "dlg1";
+                creado = true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Comuna ya Registrada", null));
+            }
+        }
+        comuna = new Comuna();
+        reqContext.addCallbackParam("formulario", formulario);
+        reqContext.addCallbackParam("creado", creado);
+        reqContext.addCallbackParam("dialog", dialog);
+    }
+
+    public void updateCiudad(ActionEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        RequestContext reqContext = RequestContext.getCurrentInstance();
+        boolean creado = false;
+        String formulario = "";
+        String dialog = "";
+        comuna.setComunaNombre(comuna.getComunaNombre().toUpperCase());
+        if (comuna.getComunaNombre().isEmpty()
+                || comuna.getComunaNombre().equalsIgnoreCase("")) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion de la  Comuna", null));
+        } else {
+            if (bussinessFacade.findComunaDesc(comuna.getComunaNombre())) {
+                Ciudad ciudad = ciudadFacade.find(idCiudad);
+                comuna.setCiudadCodigo(ciudad);
+                comunaFacade.edit(comuna);
+                comunas = comunaFacade.findAll2("comunaCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Comuna Editada", null));
+                formulario = "formCreateComuna";
+                dialog = "dlg2";
+                creado = true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Comuna ya Registrada", null));
+            }
+        }
+        comuna = new Comuna();
+        reqContext.addCallbackParam("formulario", formulario);
+        reqContext.addCallbackParam("creado", creado);
+        reqContext.addCallbackParam("dialog", dialog);
+    }
+
+    public void onRowSelect() {
+        botones = false;
+        if (!botones) {
+            System.out.println("falso");
+        }
+        comuna = selectedComuna;
+        ciudades = ciudadFacade.findAll2("ciudadCodigo");
+    }
+
     //get y set
     public List<Comuna> getComunas() {
         return comunas;
@@ -106,7 +185,5 @@ public class ComunasBean {
     public void setCiudades(List<Ciudad> ciudades) {
         this.ciudades = ciudades;
     }
-    
-    
-    
+
 }

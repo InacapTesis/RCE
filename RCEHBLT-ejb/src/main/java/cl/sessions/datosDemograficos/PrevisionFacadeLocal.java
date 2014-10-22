@@ -26,6 +26,8 @@ public interface PrevisionFacadeLocal {
     Prevision find(Object id);
 
     List<Prevision> findAll();
+    
+    List<Prevision> findAll2(String dato);
 
     List<Prevision> findRange(int[] range);
 

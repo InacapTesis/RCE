@@ -38,10 +38,9 @@
                                     filteredValue="#{ciudadesBean.filterCiudades}"
                                     emptyMessage="No se encontraron resultados">
                                     <p:ajax event="rowSelect" listener="#{ciudadesBean.onRowSelect()}" 
-                                            update=":formCiudades:ciudadNombre2 
-                                            :formCiudades:listaRegiones,
-                                            :formCiudades:ciudadCodigo, 
-                                            :formCiudades:tablaCiudades:btnEditarCiudad"/>
+                                            update=":formCiudades:tablaCiudades:btnEditarCiudad,
+                                            :formCiudades:ciudadNombre2,
+                                            :formCiudades:ciudadCodigo"/>
                                     <p:column filterBy="#{item.ciudadNombre}">
                                         <f:facet name="header">
                                             <h:outputText value="Nombre Ciudad"/>
@@ -58,7 +57,7 @@
                                          <p:commandButton process="tablaCiudades" icon="ui-icon-document" 
                                                          value="Crear"  title="Crear" onclick="PF('dlg1').show()"/>
                                          <p:commandButton process="tablaCiudades" icon="ui-icon-pencil"  id="btnEditarCiudad"
-                                                         value="Editar"  title="Editar" onclick="PF('dlg2').show()">   
+                                                          value="Editar"  title="Editar" onclick="PF('dlg2').show()" disabled="#{ciudadesBean.botones}">   
                                         </p:commandButton>
                                     </f:facet>
                                 </p:dataTable>

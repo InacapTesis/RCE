@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cl.RCE.datosDemograficosBeans;
 
 import cl.entities.datosDemograficos.NivelEducacional;
+import cl.sessions.datosDemograficos.BussinessFacade;
+import cl.sessions.datosDemograficos.BussinessFacadeLocal;
 import cl.sessions.datosDemograficos.NivelEducacionalFacade;
 import cl.sessions.datosDemograficos.NivelEducacionalFacadeLocal;
 import java.util.List;
@@ -25,6 +26,9 @@ import org.primefaces.context.RequestContext;
 @ManagedBean
 @RequestScoped
 public class NivelEducacionalBean {
+
+    @EJB
+    private final BussinessFacadeLocal bussinessFacade;
     @EJB
     private NivelEducacionalFacadeLocal nivelEducacionalFacade;
     private NivelEducacional nivelEducacional;
@@ -32,75 +36,84 @@ public class NivelEducacionalBean {
     private List<NivelEducacional> nivelesEducacionales;
     private List<NivelEducacional> filterNivelesEducacionales;
     private boolean botones;
-    
-    
-    
+
     public NivelEducacionalBean() {
+        bussinessFacade = new BussinessFacade();
         nivelEducacionalFacade = new NivelEducacionalFacade();
         nivelEducacional = new NivelEducacional();
         selectedNivelEducacional = new NivelEducacional();
         botones = true;
     }
+
     //PostConstruct
+
     @PostConstruct
-    public void myInitMethod(){
+    public void myInitMethod() {
         nivelesEducacionales = nivelEducacionalFacade.findAll2("educCodigo");
     }
-    
+
     //Metodos
-    public void onRowSelected(){
+    public void onRowSelected() {
         nivelEducacional = selectedNivelEducacional;
         botones = false;
     }
-    
-    public void createNivelEducacional(){
+
+    public void createNivelEducacional() {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
         boolean creado = false;
         String formulario = "";
         String dialog = "";
-        if(nivelEducacional.getEducDescripcion().equalsIgnoreCase("") || 
-                nivelEducacional.getEducDescripcion().isEmpty()){
-             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Nivel Educacional",null));
-        }else{
-            nivelEducacionalFacade.create(nivelEducacional);
-            nivelesEducacionales = nivelEducacionalFacade.findAll2("educCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Creado el Nivel Educacional",null));
-            creado = true;
-            formulario = "formNewNivelEducacional";
-            dialog = "dlg1";
+        nivelEducacional.setEducDescripcion(nivelEducacional.getEducDescripcion().toUpperCase());
+        if (nivelEducacional.getEducDescripcion().equalsIgnoreCase("")
+                || nivelEducacional.getEducDescripcion().isEmpty()) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Nivel Educacional", null));
+        } else {
+            if (bussinessFacade.findNivelEduDesc(nivelEducacional.getEducDescripcion())) {
+                nivelEducacionalFacade.create(nivelEducacional);
+                nivelesEducacionales = nivelEducacionalFacade.findAll2("educCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Creado el Nivel Educacional", null));
+                creado = true;
+                formulario = "formNewNivelEducacional";
+                dialog = "dlg1";
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Nivel Educacional ya Ingresado", null));
+            }
         }
         nivelEducacional = new NivelEducacional();
         reqContext.addCallbackParam("formulario", formulario);
         reqContext.addCallbackParam("creado", creado);
         reqContext.addCallbackParam("dialog", dialog);
     }
-     
-    public void updateNivelEducacional(){
+
+    public void updateNivelEducacional() {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
         boolean creado = false;
         String formulario = "";
         String dialog = "";
-        if(nivelEducacional.getEducDescripcion().equalsIgnoreCase("") || 
-                nivelEducacional.getEducDescripcion().isEmpty()){
-             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe Ingresar Datos En Descripcion del Nivel Educacional",null));
-        }else{
-            nivelEducacionalFacade.edit(nivelEducacional);
-            nivelesEducacionales = nivelEducacionalFacade.findAll2("educCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Editado el Nivel Educacional",null));
-            creado = true;
-            formulario = "formNewNivelEducacional";
-            dialog = "dlg1";
+        nivelEducacional.setEducDescripcion(nivelEducacional.getEducDescripcion().toUpperCase());
+        if (nivelEducacional.getEducDescripcion().equalsIgnoreCase("")
+                || nivelEducacional.getEducDescripcion().isEmpty()) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe Ingresar Datos En Descripcion del Nivel Educacional", null));
+        } else {
+            if (bussinessFacade.findNivelEduDesc(nivelEducacional.getEducDescripcion())) {
+                nivelEducacionalFacade.edit(nivelEducacional);
+                nivelesEducacionales = nivelEducacionalFacade.findAll2("educCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se ha Editado el Nivel Educacional", null));
+                creado = true;
+                formulario = "formNewNivelEducacional";
+                dialog = "dlg1";
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Nivel Educacional ya Ingresado", null));
+            }
         }
         nivelEducacional = new NivelEducacional();
         reqContext.addCallbackParam("formulario", formulario);
         reqContext.addCallbackParam("creado", creado);
         reqContext.addCallbackParam("dialog", dialog);
     }
-    
-    
-    
+
     //Get and Set
     public NivelEducacionalFacadeLocal getNivelEducacionalFacade() {
         return nivelEducacionalFacade;
@@ -149,7 +162,5 @@ public class NivelEducacionalBean {
     public void setBotones(boolean botones) {
         this.botones = botones;
     }
-    
-    
-    
+
 }

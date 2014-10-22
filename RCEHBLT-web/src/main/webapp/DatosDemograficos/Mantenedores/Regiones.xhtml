@@ -81,7 +81,7 @@
                                                 <div class="col-md-4">
                                                     <p:commandButton value="Guardar" actionListener="#{regionesBean.updateRegion()}" update=":msgs, :FormTablaRegiones" 
                                                                      styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)"/>
-                                                    <p:commandButton value="Cancelar" onclick="PF('dgl1').hide()" styleClass="btn btn-danger" />
+                                                    <p:commandButton value="Cancelar" onclick="PF('dlg2').hide()" styleClass="btn btn-danger" />
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -111,7 +111,7 @@
                                         <div class="col-md-4">
                                             <p:commandButton value="Guardar" actionListener="#{regionesBean.createRegion()}" update=":msgs, :FormTablaRegiones" 
                                                              styleClass="btn btn-success" oncomplete="ocultar(xhr, status, args)"/>
-                                            <p:commandButton value="Cancelar" onclick="PF('dgl1').hide()" styleClass="btn btn-danger" />
+                                            <p:commandButton value="Cancelar" onclick="PF('dlg1').hide()" styleClass="btn btn-danger" />
                                         </div>
                                     </div>
                                 </h:form>

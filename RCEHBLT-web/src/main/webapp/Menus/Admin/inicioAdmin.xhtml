@@ -19,7 +19,7 @@
                 if (args.creado) {
                     document.getElementById(args.formulario).reset();
                     PF('dlg2').hide();
-                    
+
                 }
             }
         </script>
@@ -28,7 +28,7 @@
     <h:body>
         <p:layout fullPage="true">
 
-            <p:layoutUnit id="top" position="north" size="100" resizable="true" closable="true" collapsible="true">
+            <p:layoutUnit id="top" position="north" size="100" resizable="true" closable="true" collapsible="true" >
                 <img src="#{applicationBean.baseUrl}/resources/images/configuracion.jpg" width="90" height="85"/>
             </p:layoutUnit>
 
@@ -40,9 +40,6 @@
                 <h:outputText value="West unit content." />
             </p:layoutUnit>
 
-            <p:layoutUnit position="east" size="200" header="Right" resizable="true" closable="true" collapsible="true" effect="drop">
-                <h:outputText value="Right unit content." />
-            </p:layoutUnit>
 
             <p:layoutUnit position="center" id="content">
                 <h:form id="FormMenuAdmin">
@@ -58,12 +55,22 @@
                                             url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Regiones.xhtml"/>
                                 <p:menuitem value="Ciudades" icon="ui-icon-person" 
                                             url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Ciudades.xhtml"/>
+                                <p:menuitem value="Comunas" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Comunas.xhtml"/>
+                                <p:menuitem value="Grupos Sanguineos" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/GruposSanguineos.xhtml"/>
+                                <p:menuitem value="Religiones" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Religiones.xhtml"/>
+                                <p:menuitem value="Nacionalidad" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Nacionalidades.xhtml"/>
+                                <p:menuitem value="Previsiones" icon="ui-icon-person" 
+                                            url="#{applicationBean.baseUrl}/DatosDemograficos/Mantenedores/Previsiones.xhtml"/>
                             </p:submenu>
                         </p:submenu>
                     </p:menubar>
                 </h:form>
                 <br/>
-                <ui:insert name="content">Content</ui:insert>
+                <ui:insert name="content"></ui:insert>
             </p:layoutUnit>
 
         </p:layout>

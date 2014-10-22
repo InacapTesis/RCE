@@ -7,6 +7,8 @@ package cl.RCE.datosDemograficosBeans;
 
 import cl.entities.datosDemograficos.Ciudad;
 import cl.entities.datosDemograficos.Region;
+import cl.sessions.datosDemograficos.BussinessFacade;
+import cl.sessions.datosDemograficos.BussinessFacadeLocal;
 import cl.sessions.datosDemograficos.CiudadFacade;
 import cl.sessions.datosDemograficos.CiudadFacadeLocal;
 import cl.sessions.datosDemograficos.RegionFacade;
@@ -30,6 +32,8 @@ import org.primefaces.context.RequestContext;
 public class CiudadesBean {
 
     @EJB
+    private  BussinessFacadeLocal bussinessFacade;
+    @EJB
     private final RegionFacadeLocal regionFacade;
     @EJB
     private final CiudadFacadeLocal ciudadFacade;
@@ -46,6 +50,8 @@ public class CiudadesBean {
     public CiudadesBean() {
         ciudadFacade = new CiudadFacade();
         regionFacade = new RegionFacade();
+        bussinessFacade = new BussinessFacade();
+        botones = true;
 
     }
 
@@ -57,18 +63,18 @@ public class CiudadesBean {
         ciudad = new Ciudad();
         ciudad.setRegionCodigo(new Region());
         region = new Region();
-        botones = true;
     }
 
     //Metodos
     public void onRowSelect() {
         botones = false;
+        if (!botones) {
+            System.out.println("falso");
+        }
         ciudad = selectedCiudad;
         regiones = regionFacade.findAll2("regionCodigo");
-        System.out.println("Ciudad: " + ciudad.getCiudadNombre()+ " codigo: "+ciudad.getCiudadCodigo());
-        System.out.println("Region: " + ciudad.getRegionCodigo().getRegionDescripcion()+ " codigo " +ciudad.getRegionCodigo().getRegionCodigo() );
     }
-    
+
     public void createCiudad(ActionEvent event) {
         System.out.println("Entro al Create");
         FacesContext context = FacesContext.getCurrentInstance();
@@ -76,20 +82,22 @@ public class CiudadesBean {
         boolean creado = false;
         String formulario = "";
         String dialog = "";
+        ciudad.setCiudadNombre(ciudad.getCiudadNombre().toUpperCase());
         if (ciudad.getCiudadNombre().isEmpty()
                 || ciudad.getCiudadNombre().equalsIgnoreCase("")) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Estado Civil", null));
-            System.out.println("campos erroneos");
         } else {
-            System.out.println("entro al else");
-            System.out.println("Ciudad: " + ciudad.getCiudadNombre());
-            System.out.println("Region: " + ciudad.getRegionCodigo().getRegionDescripcion());
-            ciudadFacade.create(ciudad);
-            ciudades = ciudadFacade.findAll2("ciudadCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ciudad Creada", null));
-            formulario = "formCreateCiudad";
-            dialog = "dlg1";
-            creado = true;
+            if (bussinessFacade.findCiudadDesc(ciudad.getCiudadNombre())) {
+                ciudad.setCiudadNombre(ciudad.getCiudadNombre().toUpperCase());
+                ciudadFacade.create(ciudad);
+                ciudades = ciudadFacade.findAll2("ciudadCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ciudad Creada", null));
+                formulario = "formCreateCiudad";
+                dialog = "dlg1";
+                creado = true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Estado Civil ya Registrado", null));
+            }
         }
         ciudad = new Ciudad();
         reqContext.addCallbackParam("formulario", formulario);
@@ -100,33 +108,32 @@ public class CiudadesBean {
     public void updateCiudad(ActionEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
-        System.out.println("Ciudad: " + ciudad.getCiudadNombre());
-        System.out.println("Region: " + ciudad.getRegionCodigo().getRegionDescripcion());
         boolean creado = false;
         String formulario = "";
         String dialog = "";
+        ciudad.setCiudadNombre(ciudad.getCiudadNombre().toUpperCase());
         if (ciudad.getCiudadNombre().isEmpty()
                 || ciudad.getCiudadNombre().equalsIgnoreCase("")) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe Ingresar Datos En Descripcion del Estado Civil", null));
         } else {
-            System.out.println("entro al else");
-            System.out.println("Ciudad: " + ciudad.getCiudadNombre());
-            System.out.println("Region: " + ciudad.getRegionCodigo().getRegionDescripcion());
-            region = regionFacade.find(idRegion);
-            ciudad.setRegionCodigo(region);
-            ciudadFacade.edit(ciudad);
-            ciudades = ciudadFacade.findAll2("ciudadCodigo");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ciudad Editada", null));
-            formulario = "formCreateCiudad";
-            dialog = "dlg2";
-            creado = true;
+            if (bussinessFacade.findCiudadDesc(ciudad.getCiudadNombre())) {
+                region = regionFacade.find(idRegion);
+                ciudad.setRegionCodigo(region);
+                ciudadFacade.edit(ciudad);
+                ciudades = ciudadFacade.findAll2("ciudadCodigo");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ciudad Editada", null));
+                formulario = "formCreateCiudad";
+                dialog = "dlg2";
+                creado = true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Estado Civil ya Registrado", null));
+            }
         }
         ciudad = new Ciudad();
         reqContext.addCallbackParam("formulario", formulario);
         reqContext.addCallbackParam("creado", creado);
         reqContext.addCallbackParam("dialog", dialog);
     }
-    
 
     //Get And Set
     public Ciudad getCiudad() {
@@ -163,7 +170,7 @@ public class CiudadesBean {
 
     public boolean isBotones() {
         return botones;
-    }
+    } 
 
     public void setBotones(boolean botones) {
         this.botones = botones;
@@ -188,6 +195,5 @@ public class CiudadesBean {
     public void setIdRegion(Integer idRegion) {
         this.idRegion = idRegion;
     }
-    
-    
+
 }
