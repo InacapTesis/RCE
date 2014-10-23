@@ -6,6 +6,9 @@
 
 package cl.sessions.datosDemograficos;
 
+import cl.entities.datosDemograficos.Ciudad;
+import cl.entities.datosDemograficos.Prevision;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -26,4 +29,10 @@ public interface BussinessFacadeLocal {
     public boolean findNacionalidad(String Aux);
     public boolean findTipoPrevision(String Aux);
     public boolean findPrevision(String Aux);
+    
+    
+    //Metodos de Extracion de Datos Listas
+    public List<Prevision> getListTipoPrevisionByFK(Integer Aux);
+    public List<Ciudad> getListCiudadByFK(Integer Aux);
+    
 }

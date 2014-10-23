@@ -12,8 +12,6 @@
 
             <ui:define name="content">
                 <f:view>
-
-
                     <div id="content" style="margin-left:0px !important;">
                         <p:growl id="msgs" showSummary="true" life="3000"  />  
                         <h:form id="formComunas">
@@ -39,7 +37,6 @@
                                     rowKey="#{item.comunaCodigo}"
                                     filteredValue="#{comunasBean.filterComunas}"
                                     emptyMessage="No se encontraron resultados"
-
                                     >
                                     <p:ajax event="rowSelect" listener="#{comunasBean.onRowSelect()}" 
                                             update=":formComunas:comunaCodigo, 
@@ -95,8 +92,8 @@
                                                                    var="ciudades" itemLabel="#{ciudades.ciudadNombre}"
                                                                    itemValue="#{ciudades.ciudadCodigo}" />
                                                 </h:selectOneMenu>
-                                            </div></div>
-
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             <label class="col-md-4 control-label"></label>
                                             <div class="col-md-4">
@@ -116,9 +113,17 @@
                                 <fieldset>
                                     <h:form styleClass="form-horizontal" id="formCreateComuna" >
                                         <div class="form-group">
-                                            <p:outputLabel value="Comuna Nombre:" for="comunaNombre" styleClass="col-md-4 control-label" />
+                                            <p:outputLabel value="Region :" for="region2" styleClass="col-md-4 control-label" />
                                             <div class="col-md-4">
-                                                <p:inputText id="comunaNombre" value="#{comunasBean.comuna.comunaNombre}" title="ComunaNombre" styleClass="form-control input-md" />
+                                                <h:selectOneMenu id="region2"  styleClass="form-control" 
+                                                                 value="#{comunasBean.idRegion}" required="true">
+                                                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true" />
+                                                    <f:selectItems value="#{comunasBean.regiones}" 
+                                                                   var="region" itemLabel="#{region.regionDescripcion}"
+                                                                   itemValue="#{region.regionCodigo}" />
+                                                     <p:ajax process="@this" listener="#{comunasBean.onChangeSelect()}" event="change" 
+                                                             update=":formCreateComuna:ciudadCodigo"/>
+                                                </h:selectOneMenu>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -133,6 +138,12 @@
                                                                    var="ciudades" itemLabel="#{ciudades.ciudadNombre}"
                                                                    itemValue="#{ciudades}" />
                                                 </h:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <p:outputLabel value="Comuna Nombre:" for="comunaNombre" styleClass="col-md-4 control-label" />
+                                            <div class="col-md-4">
+                                                <p:inputText id="comunaNombre" value="#{comunasBean.comuna.comunaNombre}" title="ComunaNombre" styleClass="form-control input-md" />
                                             </div>
                                         </div>
                                         <div class="form-group">

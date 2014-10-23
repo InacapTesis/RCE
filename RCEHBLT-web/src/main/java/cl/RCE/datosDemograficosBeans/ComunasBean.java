@@ -7,12 +7,15 @@ package cl.RCE.datosDemograficosBeans;
 
 import cl.entities.datosDemograficos.Ciudad;
 import cl.entities.datosDemograficos.Comuna;
+import cl.entities.datosDemograficos.Region;
 import cl.sessions.datosDemograficos.BussinessFacade;
 import cl.sessions.datosDemograficos.BussinessFacadeLocal;
 import cl.sessions.datosDemograficos.CiudadFacade;
 import cl.sessions.datosDemograficos.CiudadFacadeLocal;
 import cl.sessions.datosDemograficos.ComunaFacade;
 import cl.sessions.datosDemograficos.ComunaFacadeLocal;
+import cl.sessions.datosDemograficos.RegionFacade;
+import cl.sessions.datosDemograficos.RegionFacadeLocal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -30,13 +33,15 @@ import org.primefaces.context.RequestContext;
 @ManagedBean
 @RequestScoped
 public class ComunasBean {
-
+    @EJB
+    private final RegionFacadeLocal regionFacade;
     @EJB
     private final BussinessFacadeLocal bussinessFacade;
     @EJB
     private final CiudadFacadeLocal ciudadFacade;
     @EJB
     private final ComunaFacadeLocal comunaFacade;
+    
     private List<Comuna> comunas;
     private List<Ciudad> ciudades;
     private List<Comuna> filterComunas;
@@ -44,12 +49,15 @@ public class ComunasBean {
     private Comuna selectedComuna;
     private boolean botones;
     private Integer idCiudad;
+    private List<Region> regiones;
+    private Integer idRegion;
 
     //Constructor base de la clase 
     public ComunasBean() {
         ciudadFacade = new CiudadFacade();
         comunaFacade = new ComunaFacade();
         bussinessFacade = new BussinessFacade();
+        regionFacade = new RegionFacade();
         botones = true;
     }
 
@@ -59,9 +67,14 @@ public class ComunasBean {
         selectedComuna = new Comuna();
         comunas = comunaFacade.findAll2("comunaCodigo");
         ciudades = ciudadFacade.findAll2("ciudadCodigo");
+        regiones = regionFacade.findAll2("regionCodigo");
     }
     //metodos
 
+    public void onChangeSelect(){
+        ciudades = bussinessFacade.getListCiudadByFK(idRegion);
+    }
+    
     public void createComuna() {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext reqContext = RequestContext.getCurrentInstance();
@@ -185,5 +198,23 @@ public class ComunasBean {
     public void setCiudades(List<Ciudad> ciudades) {
         this.ciudades = ciudades;
     }
+
+    public List<Region> getRegiones() {
+        return regiones;
+    }
+
+    public void setRegiones(List<Region> regiones) {
+        this.regiones = regiones;
+    }
+
+    public Integer getIdRegion() {
+        return idRegion;
+    }
+
+    public void setIdRegion(Integer idRegion) {
+        this.idRegion = idRegion;
+    }
+    
+    
 
 }

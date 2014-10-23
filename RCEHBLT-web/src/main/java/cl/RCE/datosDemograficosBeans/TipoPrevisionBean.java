@@ -32,6 +32,7 @@ public class TipoPrevisionBean {
     private final BussinessFacadeLocal bussinessFacade;
     @EJB
     private final TipoPrevisionFacadeLocal tipoPrevisionFacade;
+    
     private TipoPrevision prevision;
     private TipoPrevision selectedPrevision;
     private List<TipoPrevision> previsiones;

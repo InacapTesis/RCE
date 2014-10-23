@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cl.sessions.datosDemograficos;
 
+import cl.entities.datosDemograficos.Ciudad;
+import cl.entities.datosDemograficos.Prevision;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +18,8 @@ import javax.persistence.Query;
  * @author AndresEduardo
  */
 @Stateless
-public class BussinessFacade implements BussinessFacadeLocal{
+public class BussinessFacade implements BussinessFacadeLocal {
+
     @PersistenceContext(unitName = "cl_RCEHBLT-ejb_ejb_1.0-SNAPSHOTPU")
     private EntityManager em;
 
@@ -72,9 +75,9 @@ public class BussinessFacade implements BussinessFacadeLocal{
         q.setParameter("nacionalidad", Aux);
         return q.getResultList().isEmpty();
     }
-    
+
     @Override
-    public boolean findTipoPrevision(String Aux){
+    public boolean findTipoPrevision(String Aux) {
         Query q = em.createQuery("SELECT tp FROM TipoPrevision tp WHERE tp.tprevisionDescripcion = :tipoPrev");
         q.setParameter("tipoPrev", Aux);
         return q.getResultList().isEmpty();
@@ -85,5 +88,29 @@ public class BussinessFacade implements BussinessFacadeLocal{
         Query q = em.createQuery("SELECT p FROM Prevision p WHERE p.previsionDescripcion = :Prev");
         q.setParameter("Prev", Aux);
         return q.getResultList().isEmpty();
+    }
+
+    @Override
+    public List<Prevision> getListTipoPrevisionByFK(Integer Aux) {
+        Query q = em.createQuery("SELECT p FROM Prevision p WHERE p.tprevisionCodigo.tprevisionCodigo = :ID ORDER BY p.previsionCodigo");
+        q.setParameter("ID", Aux);
+        
+        if (!q.getResultList().isEmpty()) {
+            return q.getResultList();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Ciudad> getListCiudadByFK(Integer Aux) {
+        Query q = em.createQuery("SELECT c FROM Ciudad c WHERE c.regionCodigo.regionCodigo = :ID");
+         q.setParameter("ID", Aux);
+        
+        if (!q.getResultList().isEmpty()) {
+            return q.getResultList();
+        } else {
+            return null;
+        }
     }
 }
